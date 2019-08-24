@@ -29,8 +29,8 @@ static bool findMatchPos(strvec_t*pStrvec, int lineNum, int xPos, int &matchLine
 		bMatched == '(')
 	{
 
-		bool bSearchDown = true; // ÊÇ·ñÏòÏÂ²éÕÒ
-		char bMatch = 0; // ´ıÆ¥Åä²éÕÒ×Ö·û
+		bool bSearchDown = true; // æ˜¯å¦å‘ä¸‹æŸ¥æ‰¾
+		char bMatch = 0; // å¾…åŒ¹é…æŸ¥æ‰¾å­—ç¬¦
 		int nStep = 1;
 		if (bMatched == ')')
 		{
@@ -60,7 +60,7 @@ static bool findMatchPos(strvec_t*pStrvec, int lineNum, int xPos, int &matchLine
 				}
 				if (matchTime == 0)
 				{
-					// Æ¥Åäµ½
+					// åŒ¹é…åˆ°
 					bMat = true;
 					break;
 				}
@@ -72,7 +72,7 @@ static bool findMatchPos(strvec_t*pStrvec, int lineNum, int xPos, int &matchLine
 				matchXpos = pos;
 				break;
 			}
-			// Òª»»ĞĞÆ¥Åä
+			// è¦æ¢è¡ŒåŒ¹é…
 			line = line + nStep;
 			tag_remove(&strBuf, (*pStrvec)[line].line.c_str(), MAX_NUMBUF);
 			if (bSearchDown)
@@ -90,7 +90,7 @@ static bool findMatchPos(strvec_t*pStrvec, int lineNum, int xPos, int &matchLine
 	}
 	else
 	{
-		// ÔİÊ±Ö»Ö§³Ö ( and )
+		// æš‚æ—¶åªæ”¯æŒ ( and )
 		return false;
 	}
 
@@ -180,7 +180,7 @@ ssize_t idaapi myhexrays_cb_t(void *ud, hexrays_event_t event, va_list va)
 	}
 	case hxe_curpos:
 	{
-					   // Êó±êµã»÷
+					   // é¼ æ ‡ç‚¹å‡»
 					   vdui_t *vu = va_arg(va, vdui_t*);
 					   cfuncptr_t* pFun = &vu->cfunc;
 					   if ((*pFun)->maturity != CMAT_FINAL)
@@ -196,7 +196,7 @@ ssize_t idaapi myhexrays_cb_t(void *ud, hexrays_event_t event, va_list va)
 						   return 0;
 					   }
 					   ctext_position_t cPos = vu->cpos;
-					   // Ìí¼Ó () [] µÈÆ¥ÅäÌø×ª
+					   // æ·»åŠ  () [] ç­‰åŒ¹é…è·³è½¬
 					   int yPos = cPos.lnnum;
 					   int xPos = cPos.x;
 					   strvec_t* str_t = (strvec_t*)&(*pFun)->get_pseudocode();
@@ -253,7 +253,7 @@ ssize_t idaapi myhexrays_cb_t(void *ud, hexrays_event_t event, va_list va)
 	}
 	case hxe_double_click:
 	{
-							 // µ±Ç°Î»ÖÃ·¢Éú¸Ä±ä
+							 // å½“å‰ä½ç½®å‘ç”Ÿæ”¹å˜
 							 vdui_t *vu = va_arg(va, vdui_t*);
 							 cfuncptr_t* pFun = &vu->cfunc;
 							 if ((*pFun)->maturity != CMAT_FINAL)
@@ -396,7 +396,7 @@ int idaapi init(void)
 		return PLUGIN_SKIP;
 	}
 
-	// ¿ªÊ¼Ìí¼Óhook
+	// å¼€å§‹æ·»åŠ hook
 	if (pHLight == NULL)
 	{
 		pHLight = new HightLight();
@@ -431,7 +431,7 @@ int idaapi init(void)
 void idaapi term()
 {
 	// exit code
-	// ½áÊøhook
+	// ç»“æŸhook
 	remove_hexrays_callback(myhexrays_cb_t, NULL);
 	if (pHLight)
 	{
@@ -474,8 +474,8 @@ bool idaapi run(size_t arg)
 }
 
 const char comment[] = "HightLight Plugin";
-const char help[] = "Hotkey to set colors is Alt-5;if error occure, contact to SpBird";             ///< Multiline help about the plugin
-const char wanted_name[] = "HeyRays HightLight Tool";      ///< The preferred short name of the plugin
+const char help[] = "Hotkey to set colors is Alt-3;if error occure, contact to SpBird";             ///< Multiline help about the plugin
+const char wanted_name[] = "HightLight";      ///< The preferred short name of the plugin
 const char wanted_hotkey[] = "Alt-3";    ///< The preferred hotkey to run the plugin
 
 // init the export struct for ida.exe
