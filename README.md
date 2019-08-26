@@ -15,15 +15,15 @@
 
 ## 主要实现功能如下：
       
-1:“（”和“）”的对应点击高亮，支持跨行匹配
+- “（”和“）”的对应点击高亮，支持跨行匹配
 
--![2](https://github.com/RevSpBird/HightLight/blob/master/2.gif)
+![2](https://github.com/RevSpBird/HightLight/blob/master/2.gif)
 
-2:“{” 和 “}” 段落之间双击高亮，点击{ 和 }所在行，能找到对应的段，快捷键J可以实现快速跳转    
+- “{” 和 “}” 段落之间双击高亮，点击{ 和 }所在行，能找到对应的段，快捷键J可以实现快速跳转    
 
 ![3](https://github.com/RevSpBird/HightLight/blob/master/3.gif)
 
-3:段落之间的颜色显示可以自行选择，快捷键alt+3或者菜单按钮中选择点击，设置后重启有效   
+- 段落之间的颜色显示可以自行选择，快捷键alt+3或者菜单按钮中选择点击，设置后重启有效   
 ![1](https://github.com/RevSpBird/HightLight/blob/master/1.gif)
       
            
