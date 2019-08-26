@@ -199,14 +199,19 @@ ssize_t idaapi myhexrays_cb_t(void *ud, hexrays_event_t event, va_list va)
 					   // 添加 () [] 等匹配跳转
 					   int yPos = cPos.lnnum;
 					   int xPos = cPos.x;
+					   if (yPos == 0)
+					   {
+						   // 第一行函数声明 只有开头和结尾有"\x01\x17"和"\x02\x17"，(和）无Punctuation
+						   break;
+					   }
 					   strvec_t* str_t = (strvec_t*)&(*pFun)->get_pseudocode();
 					   qstring strBuf;
 					   int matchLine = 0;
 					   int matchxpos = 0;
 					   char selectBuf = 0;
 					   //TEST 
-					   // 		char *pAdvance = (char *)tag_advance((*str_t)[yPos].line.c_str(), xPos);
-					   // 		msg("check tag_advance : %s", pAdvance);
+					   //		char *pAdvance = (char *)tag_advance((*str_t)[yPos].line.c_str(), 0);
+					   //		msg("check tag_advance : %s", pAdvance);
 					   if (pTempHlight->ResetNoRefresh(str_t))
 					   {
 						   refresh_idaview_anyway();
@@ -220,15 +225,43 @@ ssize_t idaapi myhexrays_cb_t(void *ud, hexrays_event_t event, va_list va)
 					   {
 						   if (findMatchPos(str_t, yPos, xPos, matchLine, matchxpos))
 						   {
-							   char *pAdvance = (char *)tag_advance((*str_t)[yPos].line.c_str(), xPos - 1);
-							   char *pMatch = (char *)tag_advance((*str_t)[matchLine].line.c_str(), matchxpos);
+							   if (matchLine == 0)
+							   {
+								   return 0;
+							   }
+							   char *pAdvBegin = (char *)(*str_t)[yPos].line.c_str();
+							   int iAdvLen = (*str_t)[yPos].line.size();
+							   char *pAdvance = (char *)tag_advance(pAdvBegin, xPos - 1);
+							   char *pMatchBegin = (char *)(*str_t)[matchLine].line.c_str();
+							   int iMatchLen = (*str_t)[matchLine].line.size();
+							   char *pMatch = (char *)tag_advance(pMatchBegin, matchxpos);
+
 							   while (*pAdvance != COLOR_ON || *(pAdvance + 1) != COLOR_SYMBOL)
 							   {
-								   pAdvance++;
+								   // 解决未知情况下越界问题
+								   if (pAdvance < &pAdvBegin[iAdvLen - 3])
+								   {
+									   pAdvance++;
+								   }
+								   else
+								   {
+									   // 要越界，直接返回
+									   return 0;
+								   }
+
 							   }
 							   while (*pMatch != COLOR_ON || *(pMatch + 1) != COLOR_SYMBOL)
 							   {
-								   pMatch++;
+								   // 解决未知情况下越界问题
+								   if (pMatch < &pMatchBegin[iMatchLen - 3])
+								   {
+									   pMatch++;
+								   }
+								   else
+								   {
+									   // 要越界，直接返回
+									   return 0;
+								   }
 							   }
 							   pTempHlight->InsertColor(yPos, (*str_t)[yPos].line);
 							   if (yPos != matchLine)
@@ -256,8 +289,10 @@ ssize_t idaapi myhexrays_cb_t(void *ud, hexrays_event_t event, va_list va)
 							 // 当前位置发生改变
 							 vdui_t *vu = va_arg(va, vdui_t*);
 							 cfuncptr_t* pFun = &vu->cfunc;
-							 if ((*pFun)->maturity != CMAT_FINAL)
+							 ctree_maturity_t eLevel = (*pFun)->maturity;
+							 if (eLevel != CMAT_FINAL)
 							 {
+								 msg("ctree_maturity_t level is %d\n", eLevel);
 								 return 0;
 							 }
 							 if (!vu->visible())
@@ -474,7 +509,7 @@ bool idaapi run(size_t arg)
 }
 
 const char comment[] = "HightLight Plugin";
-const char help[] = "Hotkey to set colors is Alt-3;if error occure, contact to SpBird";             ///< Multiline help about the plugin
+const char help[] = "Hotkey to set colors is Alt-5;if error occure, contact to SpBird";             ///< Multiline help about the plugin
 const char wanted_name[] = "HightLight";      ///< The preferred short name of the plugin
 const char wanted_hotkey[] = "Alt-3";    ///< The preferred hotkey to run the plugin
 
